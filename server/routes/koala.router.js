@@ -32,7 +32,7 @@ koalaRouter.get('/', function (req, res) {
             console.log('error making a query', error);
             res.sendStatus(500);
         })
-    });
+});
 
 
 // POST
@@ -54,8 +54,31 @@ koalaRouter.post('/', function (req, res) {
 });
 
 // PUT
-
+koalaRouter.put('/ready_to_transfer/:id', (req, res) => {
+    let queryText = `
+    UPDATE "Koalas" SET "ready_to_transfer" ='${req.body.status}' 
+    WHERE "id"='${req.params.id}';`;
+    pool.query(queryText)
+        .then((result) => {
+            console.log('result from db', result);
+            res.sendStatus(200);
+        }).catch((error) => {
+            console.log('error updating db', error);
+            res.sendStatus(500);
+        })
+});
 
 // DELETE
+koalaRouter.delete('/:id', (req, res) => {
+    let queryText = `DELETE FROM "Koalas" WHERE "id" = ${req.params.id};`;
+    pool.query(queryText)
+        .then(() => {
+            console.log('In DELETE from koalaRouter')
+            res.sendStatus(200);
+        }).catch((error) => {
+            console.log('error Deleting', error);
+            res.sendStatus(500);
+        })
+});
 
 module.exports = koalaRouter;
